@@ -11,6 +11,22 @@ import { getPrompt, setPrompt, Prompt } from '../prompt/index.js';
  * @param {Context} context
  * @returns {boolean}
  */
+
+const SHEET_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzRuSGmNmEWc42T7kdCfLoCMg1A1fXrhRW4_weFmoKPJImFmD64PS9y-ayOAWzGZNuy/exec';
+
+async function submitToSheet(data) {
+  try {
+    const res = await fetch(SHEET_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    return await res.json();
+  } catch (err) {
+    console.error('送出失敗:', err);
+    return null;
+  }
+}
 const check = (context) => (
   context.trimmedText.includes("我要預約") ||
   [...ENQUIRE_COMMANDS]
@@ -24,10 +40,54 @@ const check = (context) => (
  */
 const exec = (context) => check(context) && (
   async () => {
-
+/**
     if (context.event.isText && context.trimmedText.includes("我要預約")) {
       context.pushText("請提供以下資訊：\n1. 姓名\n2. 課程名稱\n3. 預約時間\n4. 聯絡方式");
       return context; // 不繼續走 GPT 回應流程
+    }
+*/ 
+    // ✅ 預約流程處理
+    if (!context.session.bookingStep) {
+      if (context.event.isText && context.trimmedText.includes("我要預約")) {
+        context.session.bookingStep = 1;
+        context.session.bookingData = {};
+        context.pushText("請輸入您的姓名：");
+        return context;
+      }
+    }
+
+    if (context.session.bookingStep === 1) {
+      context.session.bookingData.name = context.trimmedText;
+      context.session.bookingStep = 2;
+      context.pushText("請輸入課程名稱：");
+      return context;
+    }
+
+    if (context.session.bookingStep === 2) {
+      context.session.bookingData.course = context.trimmedText;
+      context.session.bookingStep = 3;
+      context.pushText("請輸入預約時間：");
+      return context;
+    }
+
+    if (context.session.bookingStep === 3) {
+      context.session.bookingData.time = context.trimmedText;
+      context.session.bookingStep = 4;
+      context.pushText("請輸入聯絡方式：");
+      return context;
+    }
+
+    if (context.session.bookingStep === 4) {
+      context.session.bookingData.contact = context.trimmedText;
+      context.session.bookingData.userId = context.source.userId;
+
+      // ✅ 寫入 Google Sheet
+      await submitToSheet(context.session.bookingData);
+
+      context.pushText("✅ 預約完成，謝謝您的填寫！");
+      delete context.session.bookingStep;
+      delete context.session.bookingData;
+      return context;
     }
     
     updateHistory(context.id, (history) => history.erase());
