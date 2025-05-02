@@ -23,6 +23,12 @@ const check = (context) => (
  */
 const exec = (context) => check(context) && (
   async () => {
+
+    if (context.event.isText && context.trimmedText.includes("我要預約")) {
+      context.pushText("請提供以下資訊：\n1. 姓名\n2. 課程名稱\n3. 預約時間\n4. 聯絡方式");
+      return context; // 不繼續走 GPT 回應流程
+    }
+    
     updateHistory(context.id, (history) => history.erase());
     const command = getCommand(context.trimmedText);
     const history = getHistory(context.id);
