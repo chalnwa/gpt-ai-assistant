@@ -12,6 +12,7 @@ import { getPrompt, setPrompt, Prompt } from '../prompt/index.js';
  * @returns {boolean}
  */
 const check = (context) => (
+  context.trimmedText.includes("我要預約") ||
   [...ENQUIRE_COMMANDS]
     .sort((a, b) => b.text.length - a.text.length)
     .some((command) => context.hasCommand(command))
