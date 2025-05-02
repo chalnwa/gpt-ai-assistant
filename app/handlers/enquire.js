@@ -28,7 +28,6 @@ async function submitToSheet(data) {
   }
 }
 const check = (context) => (
-  context.session.bookingStep ||  // 使用者正在填寫預約
   context.trimmedText.includes("我要預約") ||
   [...ENQUIRE_COMMANDS]
     .sort((a, b) => b.text.length - a.text.length)
@@ -70,7 +69,7 @@ const exec = (context) => check(context) && (
           data.userId = context.source.userId;
           
           // ✅ 寫入 Google Sheet
-          await submitToSheet(data);
+          //await submitToSheet(data);
 
           context.pushText("✅ 預約完成，謝謝您的填寫！");
           delete context.session.bookingStep;
