@@ -24,10 +24,11 @@ async function submitToSheet(data) {
     return await res.json();
   } catch (err) {
     console.error('送出失敗:', err);
-    return null;
+    return err;
   }
 }
 const check = (context) => (
+  context.session.bookingStep ||  // 使用者正在填寫預約
   context.trimmedText.includes("我要預約") ||
   [...ENQUIRE_COMMANDS]
     .sort((a, b) => b.text.length - a.text.length)
