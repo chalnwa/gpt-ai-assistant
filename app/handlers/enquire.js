@@ -41,55 +41,47 @@ const check = (context) => (
  */
 const exec = (context) => check(context) && (
   async () => {
-/**
+/*
     if (context.event.isText && context.trimmedText.includes("我要預約")) {
       context.pushText("請提供以下資訊：\n1. 姓名\n2. 課程名稱\n3. 預約時間\n4. 聯絡方式");
       return context; // 不繼續走 GPT 回應流程
     }
-*/ 
-    // ✅ 預約流程處理
-    if (!context.session.bookingStep) {
-      if (context.event.isText && context.trimmedText.includes("我要預約")) {
-        context.session.bookingStep = 1;
-        context.session.bookingData = {};
-        context.pushText("請輸入您的姓名：");
+*/
+    // 若使用者已經開始預約流程，直接跳過
+    if (context.session.bookingStep) {
+      // 這裡是處理使用者一次輸入所有預約資料
+      if (context.event.isText) {
+        const inputText = context.trimmedText;
+
+        // 假設用 ":" 分隔每一個項目
+        const data = {};
+        const lines = inputText.split('\n');
+        
+        lines.forEach(line => {
+          const [key, value] = line.split(':').map(str => str.trim());
+          if (key && value) {
+            data[key] = value;
+          }
+        });
+
+        // 檢查必須資料是否已填
+        if (data['姓名'] && data['課程名稱'] && data['預約時間'] && data['聯絡方式']) {
+          // 裝上 userId
+          data.userId = context.source.userId;
+          
+          // ✅ 寫入 Google Sheet
+          await submitToSheet(data);
+
+          context.pushText("✅ 預約完成，謝謝您的填寫！");
+          delete context.session.bookingStep;
+          delete context.session.bookingData;
+        } else {
+          context.pushText("⚠️ 請確認資料完整：\n1. 姓名\n2. 課程名稱\n3. 預約時間\n4. 聯絡方式");
+        }
         return context;
       }
     }
 
-    if (context.session.bookingStep === 1) {
-      context.session.bookingData.name = context.trimmedText;
-      context.session.bookingStep = 2;
-      context.pushText("請輸入課程名稱：");
-      return context;
-    }
-
-    if (context.session.bookingStep === 2) {
-      context.session.bookingData.course = context.trimmedText;
-      context.session.bookingStep = 3;
-      context.pushText("請輸入預約時間：");
-      return context;
-    }
-
-    if (context.session.bookingStep === 3) {
-      context.session.bookingData.time = context.trimmedText;
-      context.session.bookingStep = 4;
-      context.pushText("請輸入聯絡方式：");
-      return context;
-    }
-
-    if (context.session.bookingStep === 4) {
-      context.session.bookingData.contact = context.trimmedText;
-      context.session.bookingData.userId = context.source.userId;
-
-      // ✅ 寫入 Google Sheet
-      await submitToSheet(context.session.bookingData);
-
-      context.pushText("✅ 預約完成，謝謝您的填寫！");
-      delete context.session.bookingStep;
-      delete context.session.bookingData;
-      return context;
-    }
     
     updateHistory(context.id, (history) => history.erase());
     const command = getCommand(context.trimmedText);
