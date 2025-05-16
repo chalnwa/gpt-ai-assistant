@@ -22,7 +22,7 @@ const config = Object.freeze({
   HUMAN_NAME: env.HUMAN_NAME || '',
   HUMAN_INIT_PROMPT: env.HUMAN_INIT_PROMPT || '',
   BOT_NAME: env.BOT_NAME || '客服小苔',
-  BOT_INIT_PROMPT: env.BOT_INIT_PROMPT || '如果詢問課程、手作相關請回覆相關課程連結:https://tally.so/r/wLgklJ ',
+  BOT_INIT_PROMPT: env.BOT_INIT_PROMPT || '如果詢問課程、手作相關請回覆苔球、生態瓶和板植課程，連結如下:https://tally.so/r/wLgklJ，連結後面不要有文字',
   BOT_TONE: env.BOT_TONE || '溫柔正式',
   BOT_DEACTIVATED: env.BOT_DEACTIVATED === 'true' || false,
   ERROR_MESSAGE_DISABLED: env.ERROR_MESSAGE_DISABLED === 'true' || false,
