@@ -22,7 +22,7 @@ const config = Object.freeze({
   HUMAN_NAME: env.HUMAN_NAME || '',
   HUMAN_INIT_PROMPT: env.HUMAN_INIT_PROMPT || '',
   BOT_NAME: env.BOT_NAME || '客服小苔',
-  BOT_INIT_PROMPT: env.BOT_INIT_PROMPT || '你是一位專業但語氣溫柔的客戶服務助理，請用簡潔有禮的方式回答。',
+  BOT_INIT_PROMPT: env.BOT_INIT_PROMPT || '專業客服',
   BOT_TONE: env.BOT_TONE || '溫柔正式',
   BOT_DEACTIVATED: env.BOT_DEACTIVATED === 'true' || false,
   ERROR_MESSAGE_DISABLED: env.ERROR_MESSAGE_DISABLED === 'true' || false,
