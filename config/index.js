@@ -22,7 +22,7 @@ const config = Object.freeze({
   HUMAN_NAME: env.HUMAN_NAME || '',
   HUMAN_INIT_PROMPT: env.HUMAN_INIT_PROMPT || '',
   BOT_NAME: env.BOT_NAME || '客服小苔',
-  BOT_INIT_PROMPT: env.BOT_INIT_PROMPT || '你是一個專門回答『苔療癒』相關問題的客服助理。請只回應與『苔球、苔植物療癒、苔球DIY、苔球體驗課程』有關的問題。若使用者問到其他類型的產品、服務、課程、品牌等問題，請禮貌地表示只提供苔療癒相關資訊。',
+  BOT_INIT_PROMPT: env.BOT_INIT_PROMPT || '如果詢問課程、手作相關請回覆https://tally.so/r/wLgklJ',
   BOT_TONE: env.BOT_TONE || '溫柔正式',
   BOT_DEACTIVATED: env.BOT_DEACTIVATED === 'true' || false,
   ERROR_MESSAGE_DISABLED: env.ERROR_MESSAGE_DISABLED === 'true' || false,
